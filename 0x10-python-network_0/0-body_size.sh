@@ -1,4 +1,14 @@
 #!/bin/bash
-# This script will takes in a URL, sends a request to that URL using curl, and displays the size of the response body in bytes
 
-curl -sI "$1" | grep -i Content-Length | awk '{print $2}'
+URL=$1
+
+# Send a GET request to the provided URL and store the response in a temporary file
+response=$(mktemp)
+curl -s "$URL" -o $response
+
+# Get the size of the response body
+response_size=$(stat -c %s $response)
+echo "Size of the response body: $response_size bytes"
+
+# Clean up the temporary file
+rm $response
